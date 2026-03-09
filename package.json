@@ -1,0 +1,28 @@
+{
+  "name": "rockwell_ot_cybersecurity_backend",
+  "version": "1.0.0",
+  "description": "Backend repository for  Rockwell Automation OT Cybersecurity Educative Platform",
+  "keywords": [
+    "Backend",
+    "PostgreSQL",
+    "API"
+  ],
+  "homepage": "https://github.com/jorgenavarro13/rockwell_ot_cybersecurity_backend#readme",
+  "bugs": {
+    "url": "https://github.com/jorgenavarro13/rockwell_ot_cybersecurity_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgenavarro13/rockwell_ot_cybersecurity_backend.git"
+  },
+  "license": "MIT",
+  "author": "Jorge Arturo Montiel Navarro",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js --watch"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
