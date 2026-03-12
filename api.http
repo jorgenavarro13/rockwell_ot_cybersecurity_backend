@@ -1,0 +1,4 @@
+## Recuperar todos
+GET http://localhost:3000/
+
+## Recuperar por id

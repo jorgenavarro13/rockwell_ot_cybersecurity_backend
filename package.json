@@ -20,11 +20,17 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js --watch"
+    "test": "node index.js --watch",
+    "dev": "node server-with-postgre.js --watch"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "pg": "^8.20.0"
+    "fs": "^0.0.1-security",
+    "pg": "^8.20.0",
+    "postgres": "^3.4.8",
+    "url": "^0.11.4",
+    "zod": "^4.3.6"
   }
 }

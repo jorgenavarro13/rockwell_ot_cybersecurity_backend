@@ -1,23 +1,24 @@
-import express,{json} from 'express';
-import {corsMiddleware} from './middlewares/cors.js'
-import {createRockwellRouter} from './routes/rockwell.js'
+import express, { json } from 'express'
+import cors from 'cors'
+import { corsMiddleware } from './middlewares/cors.js'
+import { createRockwellRouter } from './routes/rockwell.js'
 
+export const App = ({ model }) => {
+  const app = express()
 
-export const App = ({model}) => {
-  const app = express();
-  app.use(json());
-  app.use(corsMiddleware());
-  app.disable('x-powered-by');
+  console.log("DB conectada:", !!model)
 
-  app.use('/', createRockwellRouter({model}));
+  // app.use(cors())
+  app.use(json())
+  app.use(corsMiddleware())
+  app.disable('x-powered-by')
 
-  const PORT = process.env.PORT ?? 3000;
+  app.use('/', createRockwellRouter({ model }))
 
-  app.get('/', (req, res) => {
-    res.send('Hello, World!');
-  });
+  const PORT =  3000
+
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port http://localhost:${PORT}`);
-  });
-};
+    console.log(`Server running at http://localhost:${PORT}`)
+  })
+}

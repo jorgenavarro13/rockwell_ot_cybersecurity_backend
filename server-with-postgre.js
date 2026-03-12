@@ -1,5 +1,5 @@
-import {App} from './index.js'
+import { App } from './app.js'
+import { RockwellModel } from './models/postgre/rockwell.js'
 
-import {Model} from './models/postgre/rockwell.js'
 
-App({model:Model})
+App({ model: RockwellModel })
