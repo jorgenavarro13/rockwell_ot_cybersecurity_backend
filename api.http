@@ -1,4 +1,9 @@
 ## Recuperar todos
-GET http://localhost:3000/
+GET http://localhost:3000/user
 
-## Recuperar por id
+### Recuperar un usuario por id
+GET http://localhost:3000/user/1
+
+### Crear un nuevo usuario
+
+

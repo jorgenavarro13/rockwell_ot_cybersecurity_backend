@@ -13,7 +13,7 @@ export class RockwellController {
     res.json(users)
   }
 
-  /*
+  
   getById = async (req, res) => {
     const { id } = req.params
     const user = await this.model.getById({ id })
@@ -21,6 +21,7 @@ export class RockwellController {
     res.status(404).json({ message: 'User not found' })
   }
 
+  /*
   create = async (req, res) => {
     const result = validateUser(req.body)
 
