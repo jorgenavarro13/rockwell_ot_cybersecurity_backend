@@ -35,6 +35,7 @@ CREATE TABLE users
     password_hash TEXT NOT NULL,
     phone TEXT UNIQUE CHECK ( LENGTH(phone) < 13 ),
     type_of_user INT REFERENCES type_users(type_id),
+    company TEXT,
     birthday timestamptz,
     is_active BOOLEAN DEFAULT TRUE,
     is_banned BOOLEAN DEFAULT FALSE
