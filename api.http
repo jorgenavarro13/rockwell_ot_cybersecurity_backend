@@ -5,5 +5,12 @@ GET http://localhost:3000/user
 GET http://localhost:3000/user/1
 
 ### Crear un nuevo usuario
+POST http://localhost:3000/login
+Content-Type: application/json
 
+{
+    "name": "Jorge",
+    "email": "jorge.85da@gmail.com",
+    "password": "1234fada"
+}
 

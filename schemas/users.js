@@ -3,32 +3,24 @@ import z from 'zod'
 
  // TODO: Create schema for validation
 
- 
+
 const userSchema = z.object({
   name: z.string({
     invalid_type_error: 'Name must be a string',
     required_error: 'Username is required.'
   }),
-  year: z.number().int().min(1900).max(2024),
-  director: z.string(),
-  duration: z.number().int().positive(),
-  rate: z.number().min(0).max(10).default(5),
-  poster: z.string().url({
-    message: 'Poster must be a valid URL'
+  email: z.string().email({
+    message: 'Email must be a valid email address'
   }),
-  genre: z.array(
-    z.enum(['Action', 'Adventure', 'Crime', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Thriller', 'Sci-Fi']),
-    {
-      required_error: 'Movie genre is required.',
-      invalid_type_error: 'Movie genre must be an array of enum Genre'
-    }
-  )
+  password: z.string().min(6,{
+    message: 'Password must be at least 6 characters long'
+  })
 })
 
-export function validateMovie (input) {
-  return movieSchema.safeParse(input)
+export function validateUser (input) {
+  return userSchema.safeParse(input)
 }
 
-export function validatePartialMovie (input) {
-  return movieSchema.partial().safeParse(input)
+export function validatePartialUser (input) {
+  return userSchema.partial().safeParse(input)
 }

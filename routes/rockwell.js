@@ -8,8 +8,8 @@ export const createRockwellRouter = ({ model }) => {
 
   rockwellRouter.get('/user', rockwellController.getAll)
   rockwellRouter.get('/user/:id', rockwellController.getById)
-  // rockwellRouter.post('/', rockwellController.create)
-// 
+  rockwellRouter.post('/login', rockwellController.create)
+ 
   // rockwellRouter.delete('/:id', rockwellController.delete)
   // rockwellRouter.patch('/:id', rockwellController.update)
 

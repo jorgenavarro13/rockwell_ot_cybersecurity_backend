@@ -1,4 +1,5 @@
 import pg from './db.js';
+import {auth} from '../../services/authService.js';
 
 export class RockwellModel {
   static async getAll ({ type }) {
@@ -19,47 +20,33 @@ export class RockwellModel {
 
     return user
   }
-}
-/*
+
+
   static async create ({ input }) {
     const {
-      genre: genreInput, // genre is an array
-      title,
-      year,
-      duration,
-      director,
-      rate,
-      poster
+      name,
+      email,
+      password
     } = input
 
-    // todo: crear la conexión de genre
+    const hashedPassword = await auth.hashPassword(password);
 
-    // crypto.randomUUID()
-    const [uuidResult] = await connection.query('SELECT UUID() uuid;')
-    const [{ uuid }] = uuidResult
-
+    // TODO: Validar que se cree y que no genere problemas relacionados al id
     try {
-      await connection.query(
-        `INSERT INTO movie (id, title, year, director, duration, poster, rate)
-          VALUES (UUID_TO_BIN("${uuid}"), ?, ?, ?, ?, ?, ?);`,
-        [title, year, director, duration, poster, rate]
-      )
+      await pg `
+      INSERT INTO users
+      (user_id,name, email, password_hash) 
+      VALUES
+      (13,${name}, ${email}, ${hashedPassword});
+      `
     } catch (e) {
-      // puede enviarle información sensible
-      throw new Error('Error creating movie')
-      // enviar la traza a un servicio interno
-      // sendLog(e)
+      throw new Error('Error creating the user')
+      
     }
-
-    const [movies] = await connection.query(
-      `SELECT title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
-        FROM movie WHERE id = UUID_TO_BIN(?);`,
-      [uuid]
-    )
-
-    return movies[0]
   }
 
+}
+/*
   static async delete ({ id }) {
     // ejercio fácil: crear el delete
   }

@@ -1,4 +1,4 @@
-// import { validateUser, validatePartialUser } from '../schemas/users.js'
+import { validateUser, validatePartialUser } from '../schemas/users.js'
 
 export class RockwellController {
   constructor ({ model }) {
@@ -21,7 +21,7 @@ export class RockwellController {
     res.status(404).json({ message: 'User not found' })
   }
 
-  /*
+  
   create = async (req, res) => {
     const result = validateUser(req.body)
 
@@ -32,9 +32,10 @@ export class RockwellController {
 
     const newUser = await this.model.create({ input: result.data })
 
-    res.status(201).json(newUser)
+    res.status(201).json({hola: 'mundo'})
   }
-
+  
+  /*
   delete = async (req, res) => {
     const { id } = req.params
 
