@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS countries CASCADE ;
 DROP TABLE IF EXISTS type_users CASCADE ;
 DROP TABLE IF EXISTS roles CASCADE;
@@ -26,6 +25,12 @@ CREATE TABLE roles
     description TEXT UNIQUE CHECK(LENGTH(description)<30)
 );
 
+CREATE TABLE companies
+(
+    company_id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
 CREATE TABLE users
 (
     user_id BIGSERIAL PRIMARY KEY,
@@ -35,7 +40,7 @@ CREATE TABLE users
     password_hash TEXT NOT NULL,
     phone TEXT UNIQUE CHECK ( LENGTH(phone) < 13 ),
     type_of_user INT REFERENCES type_users(type_id),
-    company TEXT,
+    company_id INT REFERENCES companies(company_id),
     birthday timestamptz,
     is_active BOOLEAN DEFAULT TRUE,
     is_banned BOOLEAN DEFAULT FALSE
@@ -75,5 +80,4 @@ CREATE TABLE  matches
 
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (game_id) REFERENCES games(game_id)
-)
-
+);

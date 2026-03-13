@@ -1,3 +1,5 @@
+
+
 -- COUNTRIES
 INSERT INTO countries (country_id, name, logo) VALUES
 (1,'Mexico','mexico.png'),
@@ -19,20 +21,28 @@ INSERT INTO roles (role_id, description) VALUES
 (2,'moderator'),
 (3,'admin');
 
--- USERS (10 users)
-INSERT INTO users 
-(user_id,name,country,email,password_hash,phone,type_of_user,company,birthday,is_active,is_banned)
+-- COMPANIES
+
+INSERT INTO companies (company_id, name)
 VALUES
-(1,'Francisco Lopez',1,'francisco@email.com','hash1','8110000001',1,NULL,'1998-04-10',TRUE,FALSE),
-(2,'Jorge Ramirez',1,'jorge@email.com','hash2','8110000002',1,NULL,'1997-02-20',TRUE,FALSE),
-(3,'Ian Torres',2,'ian@email.com','hash3','8110000003',1,NULL,'2000-09-15',TRUE,FALSE),
-(4,'Daniel Perez',3,'daniel@email.com','hash4','8110000004',2,'GameDevStudio','1996-12-01',TRUE,FALSE),
+(1,'Google'),
+(2,'John Deere'),
+(3,'Microsoft');
+
+-- USERS (10 users)
+INSERT INTO users
+(user_id,name,country,email,password_hash,phone,type_of_user,company_id,birthday,is_active,is_banned)
+VALUES
+(1,'Francisco Lopez',1,'francisco@email.com','hash1','8110000001',1,1,'1998-04-10',TRUE,FALSE),
+(2,'Jorge Ramirez',1,'jorge@email.com','hash2','8110000002',1,2,'1997-02-20',TRUE,FALSE),
+(3,'Ian Torres',2,'ian@email.com','hash3','8110000003',1,3,'2000-09-15',TRUE,FALSE),
+(4,'Daniel Perez',3,'daniel@email.com','hash4','8110000004',2,3,'1996-12-01',TRUE,FALSE),
 (5,'Maria Gonzalez',4,'maria@email.com','hash5','8110000005',1,NULL,'1999-07-11',TRUE,FALSE),
-(6,'Luis Hernandez',1,'luis@email.com','hash6','8110000006',3,'QA Games','1995-01-25',TRUE,FALSE),
+(6,'Luis Hernandez',1,'luis@email.com','hash6','8110000006',3,1,'1995-01-25',TRUE,FALSE),
 (7,'Ana Martinez',5,'ana@email.com','hash7','8110000007',1,NULL,'2001-03-30',TRUE,FALSE),
-(8,'Carlos Sanchez',2,'carlos@email.com','hash8','8110000008',2,'DevCorp','1994-08-18',TRUE,FALSE),
+(8,'Carlos Sanchez',2,'carlos@email.com','hash8','8110000008',2,2,'1994-08-18',TRUE,FALSE),
 (9,'Sofia Diaz',3,'sofia@email.com','hash9','8110000009',1,NULL,'2002-11-09',TRUE,FALSE),
-(10,'Miguel Castillo',4,'miguel@email.com','hash10','8110000010',4,'GameCompany','1993-05-05',TRUE,FALSE);
+(10,'Miguel Castillo',4,'miguel@email.com','hash10','8110000010',4,1,'1993-05-05',TRUE,FALSE);
 
 -- USER ROLES
 INSERT INTO user_roles (user_id, role_id) VALUES
