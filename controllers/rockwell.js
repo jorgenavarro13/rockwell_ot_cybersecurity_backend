@@ -7,7 +7,6 @@ export class RockwellController {
   }
 
   getAll = async (req, res) => {
-    console.log("Request received for getAll")
     const { type } = req.query
     const users = await this.model.getAll({ type })
     res.json(users)
@@ -32,7 +31,7 @@ export class RockwellController {
 
     const newUser = await this.model.create({ input: result.data })
 
-    res.status(201).json({hola: 'mundo'})
+    res.status(201).json(newUser)
   }
   
   /*

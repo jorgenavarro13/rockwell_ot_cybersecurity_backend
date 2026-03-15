@@ -10,7 +10,34 @@ Content-Type: application/json
 
 {
     "name": "Jorge",
-    "email": "jorge.85da@gmail.com",
-    "password": "1234fada"
+    "email": "jorgeqwefadfae@gmail.com",
+    "password": "1234fadfaada"
+}
+### Crear un nuevo usuario
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "name": "Naomi Trabous",
+    "email": "NaomiT@gmail.com",
+    "country": 1,
+    "password": "1234fadfaada",
+    "phone": "212212121",
+    "typeOfUser": 2,
+    "birthday": "1998-04-10"
 }
 
+### Crear un nuevo usuario
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "name": "Naomi Trabous",
+    "email": "NaomiTT@gmail.com",
+    "country": 1,
+    "company" :2,
+    "password": "1234fadfaada",
+    "phone": "2122121565",
+    "typeOfUser": 2,
+    "birthday": "1998-04-10"
+}

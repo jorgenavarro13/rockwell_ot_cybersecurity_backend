@@ -25,23 +25,43 @@ export class RockwellModel {
   static async create ({ input }) {
     const {
       name,
+      country,
       email,
-      password
+      password,
+      phone,
+      typeOfUser, // TODO: Replace the number of type of users
+      company, // TODO: Replace the number for gloabal variable
+      birthday
     } = input
 
     const hashedPassword = await auth.hashPassword(password);
 
-    // TODO: Validar que se cree y que no genere problemas relacionados al id
     try {
+
       await pg `
       INSERT INTO users
-      (user_id,name, email, password_hash) 
+      (name, email, password_hash, country, phone, type_of_user, company_id, birthday) 
       VALUES
-      (13,${name}, ${email}, ${hashedPassword});
+      (
+        ${name},
+        ${email},
+        ${hashedPassword},
+        ${country ?? null},
+        ${phone ?? null},
+        (SELECT type_id FROM type_users WHERE relation = 'player'),
+        ${company ?? null},
+        ${birthday ?? null}
+      );
       `
-    } catch (e) {
-      throw new Error('Error creating the user')
+
+      const user = await pg `
+      SELECT * FROM users WHERE email=${email}`
       
+      return user;
+
+    } catch (e) {
+      console.error('DB ERROR:', e)
+      throw e
     }
   }
 
@@ -56,4 +76,4 @@ export class RockwellModel {
   }
 
 }
-*/
+*/  
