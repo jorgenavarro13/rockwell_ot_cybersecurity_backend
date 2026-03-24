@@ -9,6 +9,7 @@ async function hashPassword(password) {
   return await argon2.hash(password);
 }
 
+// Recuerda que no se puede des-hashear una contraseña, es por ello que lo único que puedes hacer es comparar si volviendolo a hashear es lo mismo
 async function verifyPassword(password, userHashedPassword) {
 
   if (!password || !userHashedPassword) {
@@ -21,4 +22,4 @@ async function verifyPassword(password, userHashedPassword) {
 export const auth = {
   hashPassword,
   verifyPassword
-};
+};  

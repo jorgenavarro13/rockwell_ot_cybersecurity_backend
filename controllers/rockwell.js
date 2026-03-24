@@ -3,7 +3,7 @@ import { validateUser, validatePartialUser } from '../schemas/users.js'
 export class RockwellController {
   constructor ({ model }) {
     this.model = model
-    console.log("Model en controller:", !!model)
+    // console.log("Model en controller:", !!model)
   }
 
   getAll = async (req, res) => {
@@ -26,6 +26,8 @@ export class RockwellController {
 
     if (!result.success) {
     // 422 Unprocessable Entity
+    // 400 Bad Request
+    console.log("fok")
       return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
 

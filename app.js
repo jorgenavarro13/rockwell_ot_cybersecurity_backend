@@ -2,22 +2,21 @@ import express, { json } from 'express'
 import cors from 'cors'
 import { corsMiddleware } from './middlewares/cors.js'
 import { createRockwellRouter } from './routes/rockwell.js'
+import 'dotenv/config'
 import morgan from 'morgan'
 
 export const App = ({ model }) => {
   const app = express()
-  console.log("DB conectada:", !!model)
-  
+  // console.log("DB conectada:", !!model)
+  app.use(cors())
   app.use(json())
   app.use(morgan('tiny'))
-  app.use(corsMiddleware())
+  // app.use(corsMiddleware())
   app.disable('x-powered-by')
 
   app.use('/', createRockwellRouter({ model }))
 
-  const PORT =  3000
-
-
+  const PORT = process.env.LOCALPORT || 3000
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
   })
