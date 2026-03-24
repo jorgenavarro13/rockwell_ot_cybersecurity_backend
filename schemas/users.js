@@ -1,6 +1,9 @@
 import z from 'zod'
+import countries from "i18n-iso-countries";
+import en from "i18n-iso-countries/langs/en.json";
 //import {variables} from './globalvariables.js';
 
+// Refactor schema, country is going to be a string, specifically a 
 const userSchema = z.object({
   name: z.string({
     invalid_type_error: 'Name must be a string',
@@ -19,7 +22,7 @@ const userSchema = z.object({
   
   phone:z.string().max(13).optional(),
 
-  typeOfUser:z.number().positive().min(0).max(5).optional(), // TODO: Replace the number of type of users
+  typeOfUser:z.enum(['Employee', 'Client', 'Not related']),
 
   company:z.number().positive().min(0).max(5).optional(), // TODO: Replace the number for gloabal variable
 
