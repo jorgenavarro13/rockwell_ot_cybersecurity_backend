@@ -1,7 +1,12 @@
 import z from 'zod'
-import countries from "i18n-iso-countries";
-import en from "i18n-iso-countries/langs/en.json";
 //import {variables} from './globalvariables.js';
+
+const country= 
+  z.object({
+    code: z.string(),
+    name: z.string(),
+    flag: z.url()
+  });
 
 // Refactor schema, country is going to be a string, specifically a 
 const userSchema = z.object({
@@ -10,9 +15,9 @@ const userSchema = z.object({
     required_error: 'Username is required.'
   }),
   
-  country: z.number().min(0).max(4).optional(), //TODO Stablish max value based on global variables
+  country:country.optional(),
 
-  email: z.string().email({
+  email: z.email({
     message: 'Email must be a valid email address'
   }),
 
@@ -24,7 +29,7 @@ const userSchema = z.object({
 
   typeOfUser:z.enum(['Employee', 'Client', 'Not related']),
 
-  company:z.number().positive().min(0).max(5).optional(), // TODO: Replace the number for gloabal variable
+  company:z.string().optional(),
 
   birthday: z.iso.date().optional()
 
@@ -32,7 +37,14 @@ const userSchema = z.object({
 
 
 export function validateUser (input) {
-  return userSchema.safeParse(input)
+  const cleanedInput = {...input}
+
+    if( cleanedInput.country === null  || cleanedInput.country === undefined ) { delete cleanedInput.country}
+    if( cleanedInput.phone === '' || cleanedInput.phone === null  || cleanedInput.phone === undefined) { delete cleanedInput.phone}
+    if( cleanedInput.company=== '' || cleanedInput.company === null  || cleanedInput.company === undefined) { delete cleanedInput.company}
+    if( cleanedInput.birthday=== '' || cleanedInput.birthday === null  || cleanedInput.birthday === undefined) { delete cleanedInput.birthday}
+
+  return userSchema.safeParse(cleanedInput)
 }
 
 export function validatePartialUser (input) {

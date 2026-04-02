@@ -36,23 +36,21 @@ export class RockwellModel {
 
     const hashedPassword = await auth.hashPassword(password);
 
-    try {
 
+    try {
       await pg `
       INSERT INTO users
-      (name, email, password_hash, country, phone, type_of_user, company_id, birthday) 
+      (name, email, password_hash, type_of_user) 
       VALUES
       (
         ${name},
         ${email},
         ${hashedPassword},
-        ${country ?? null},
-        ${phone ?? null},
-        (SELECT type_id FROM type_users WHERE relation = 'player'),
-        ${company ?? null},
-        ${birthday ?? null}
+        (SELECT type_id FROM type_users WHERE relation = ${typeOfUser})
       );
       `
+
+      // TODO: Verify and update the country, company and birthday fields
 
       const user = await pg `
       SELECT * FROM users WHERE email=${email}`
