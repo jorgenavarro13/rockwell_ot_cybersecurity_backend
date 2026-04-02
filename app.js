@@ -2,16 +2,18 @@ import express, { json } from 'express'
 import cors from 'cors'
 import { corsMiddleware } from './middlewares/cors.js'
 import { createRockwellRouter } from './routes/rockwell.js'
+import cookieParser from 'cookie-parser'
 import 'dotenv/config'
 import morgan from 'morgan'
 
 export const App = ({ model }) => {
   const app = express()
+  app.use(cookieParser())
   // console.log("DB conectada:", !!model)
-  app.use(cors())
+  //app.use(cors())
   app.use(json())
   app.use(morgan('tiny'))
-  // app.use(corsMiddleware())
+  app.use(corsMiddleware())
   app.disable('x-powered-by')
 
   app.use('/', createRockwellRouter({ model }))

@@ -40,9 +40,11 @@ export class RockwellController {
       return res.status(500).json({ error: 'Internal server error' })
     }
 
-    const token = jwt.sign( {
-      username:newUser.name, role:newUser.role
-    },process.env.SECRET_JWT_KEY,{expiresIn:'1h'})
+    const token = jwt.sign( 
+      {username:newUser.name, role:newUser.role}
+    , process.env.SECRET_JWT_KEY
+    , {expiresIn:'1h'}
+    )
 
     res.cookie('token', token, {
       httpOnly: true,
