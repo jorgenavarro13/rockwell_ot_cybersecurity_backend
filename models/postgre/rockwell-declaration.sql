@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS countries CASCADE ;
 DROP TABLE IF EXISTS type_users CASCADE ;
 DROP TABLE IF EXISTS roles CASCADE;
@@ -5,10 +6,12 @@ DROP TABLE IF EXISTS user_roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS games CASCADE;
 DROP TABLE IF EXISTS matches CASCADE;
+DROP TABLE IF EXISTS companies CASCADE;
 
 CREATE TABLE countries
 (
     country_id SERIAL PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     logo TEXT NOT NULL
 );
@@ -16,7 +19,7 @@ CREATE TABLE countries
 CREATE TABLE type_users
 (
     type_id SERIAL PRIMARY KEY,
-    relation TEXT NOT NULL
+    relation TEXT NOT NULL UNIQUE,
 );
 
 CREATE TABLE roles
@@ -38,10 +41,11 @@ CREATE TABLE users
     country INT REFERENCES countries (country_id),
     email TEXT NOT NULL UNIQUE CHECK (LENGTH(email) < 100),
     password_hash TEXT NOT NULL,
-    phone TEXT UNIQUE CHECK ( LENGTH(phone) < 13 ),
-    type_of_user INT REFERENCES type_users(type_id),
+    phone TEXT UNIQUE CHECK ( LENGTH(phone) < 14 ),
+    type_of_user INT NOT NULL REFERENCES type_users(type_id),
+    role_id INT REFERENCES roles(role_id) DEFAULT (SELECT role_id FROM roles WHERE description = 'user'),
     company_id INT REFERENCES companies(company_id),
-    birthday timestamptz,
+    birthday DATE,
     is_active BOOLEAN DEFAULT TRUE,
     is_banned BOOLEAN DEFAULT FALSE
 );
