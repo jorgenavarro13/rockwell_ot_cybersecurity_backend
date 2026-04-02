@@ -8,6 +8,7 @@ if (!pg) {
 } else {
   console.log('Successfully connected to PostgreSQL database')
 } 
-export default pg
+export default pg;
+
 
 

@@ -1,4 +1,5 @@
 import { validateUser, validatePartialUser } from '../schemas/users.js'
+import jwt from 'jsonwebtoken'
 
 export class RockwellController {
   constructor ({ model }) {
@@ -27,13 +28,31 @@ export class RockwellController {
     if (!result.success) {
     // 422 Unprocessable Entity
     // 400 Bad Request
-    console.log("fok")
       return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
 
-    const newUser = await this.model.create({ input: result.data })
+    let newUser = null;
+    try {
+    newUser = await this.model.create({ input: result.data })
+    }
+    catch (e) {
+      console.error('Error creating user:', e) // Remove this line in production
+      return res.status(500).json({ error: 'Internal server error' })
+    }
 
-    res.status(201).json(newUser)
+    const token = jwt.sign( {
+      username:newUser.name, role:newUser.role
+    },process.env.SECRET_JWT_KEY,{expiresIn:'1h'})
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 3600000, // 1 hour
+       sameSite: 'lax',
+       secure: false
+    })
+    .status(201)
+    .json( {newUser} )
+
   }
   
   /*
