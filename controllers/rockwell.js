@@ -42,7 +42,7 @@ export class RockwellController {
     }
 
     const token = jwt.sign(
-      {username:newUser.name, role:newUser.type_of_user}
+      {username:newUser.name, role:newUser.role_id, user_id: newUser.user_id}
     , process.env.SECRET_JWT_KEY
     , {expiresIn:'1h'}
     )
@@ -66,6 +66,7 @@ export class RockwellController {
     }
     try {
       const data = jwt.verify(token, process.env.SECRET_JWT_KEY)
+      console.log(data);
       return res.json({ activeSession:true, data, isAdmin: data.role === 2}) // Adjust hardcoded role check as needed, use value from database
     }catch {
       return res.json({ message: 'Invalid token' })
@@ -84,6 +85,35 @@ export class RockwellController {
       return res.json({ exists: false })
     }
 
+    login = async (req, res) => {
+      const user = validatePartialUser(req.body)
+
+      if (!user.success) {
+        return res.status(400).json({ error: JSON.parse(user.error.message) })
+      }
+
+      const result = await this.model.login({ input: user.data })
+      console.log(result.success) // Remove this line in production
+
+      if (result.success === false) {
+        return res.status(401).json(result)
+      }
+      console.log(result)
+      
+        const token = jwt.sign(
+          {username:result.name, role:result.role, user_id: result.user_id}
+        , process.env.SECRET_JWT_KEY
+        , {expiresIn:'1h'}
+        )
+
+        res.cookie('token', token, {
+          httpOnly: true,
+          maxAge: 3600000, // 1 hour
+           sameSite: 'lax',
+           secure: false
+        })
+        .json({ success: true })
+    }
   /*
   delete = async (req, res) => {
     const { id } = req.params
