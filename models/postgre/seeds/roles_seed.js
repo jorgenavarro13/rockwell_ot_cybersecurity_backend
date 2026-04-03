@@ -11,3 +11,5 @@ export async function seedRoles() {
         console.log(`${role}`);
     }
 }
+
+seedRoles();
