@@ -31,17 +31,17 @@ export class RockwellController {
       return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
 
-    let newUser = null;
+    let newUser = {};
     try {
-    newUser = await this.model.create({ input: result.data })
+      newUser = await this.model.create({ input: result.data })
     }
     catch (e) {
       console.error('Error creating user:', e) // Remove this line in production
       return res.status(500).json({ error: 'Internal server error' })
     }
 
-    const token = jwt.sign( 
-      {username:newUser.name, role:newUser.role}
+    const token = jwt.sign(
+      {username:newUser.name, role:newUser.type_of_user}
     , process.env.SECRET_JWT_KEY
     , {expiresIn:'1h'}
     )
@@ -57,6 +57,20 @@ export class RockwellController {
 
   }
   
+  session = async (req,res) => {
+    // Todo: Possibly change for the tokenParser middleware option but it's working fine now
+    const token = req.cookies.token
+    if (!token) {
+      return res.status(401).json({ activeSession:false})
+    }
+    try {
+      const data = jwt.verify(token, process.env.SECRET_JWT_KEY)
+      return res.json({ activeSession:true, data })
+    }catch {
+      return res.json({ message: 'Invalid token' })
+    }
+  }
+
   /*
   delete = async (req, res) => {
     const { id } = req.params

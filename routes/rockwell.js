@@ -5,6 +5,7 @@ export const createRockwellRouter = ({ model }) => {
   const rockwellRouter = Router()
 
   const rockwellController = new RockwellController({ model })
+  rockwellRouter.get('/session', rockwellController.session) // Middleware para obtención de token
 
   rockwellRouter.get('/user', rockwellController.getAll)
   rockwellRouter.get('/user/:id', rockwellController.getById)

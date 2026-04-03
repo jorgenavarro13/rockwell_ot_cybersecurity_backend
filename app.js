@@ -3,12 +3,14 @@ import cors from 'cors'
 import { corsMiddleware } from './middlewares/cors.js'
 import { createRockwellRouter } from './routes/rockwell.js'
 import cookieParser from 'cookie-parser'
+import {tokenParser} from './middlewares/tokenParser.js'
 import 'dotenv/config'
 import morgan from 'morgan'
 
 export const App = ({ model }) => {
   const app = express()
   app.use(cookieParser())
+  app.use(tokenParser())
   // console.log("DB conectada:", !!model)
   //app.use(cors())
   app.use(json())
