@@ -1,5 +1,6 @@
 import pg from './db.js';
 import {auth} from '../../services/authService.js';
+import { updateMissingFieldsRegister } from '../../helpers/updateMissingFieldsRegister.js';
 
 export class RockwellModel {
   static async getAll ({ type }) {
@@ -50,12 +51,20 @@ export class RockwellModel {
       );
       `
 
-      // TODO: Verify and update the country, company and birthday fields
+    const id= await pg `
+      SELECT user_id FROM users WHERE email=${email}
+      `
+      console.log(id[0].user_id) // Remove this line in production;
+    
+      try{
+        await updateMissingFieldsRegister(id[0].user_id, country, birthday, phone, company)
+      } catch (e){ console.warn('Error updating missing fields:', e) }
 
-      const user = await pg `
-      SELECT * FROM users WHERE email=${email}`
+     const user = await pg `
+     SELECT * FROM users WHERE email=${email}`
       
-      return user;
+    return user[0]; // user es una lista, entonces solo queremos el primer elemento de esta que es nuestro usuario
+    // En producción se recomienda no pasar todos los datos, pero para fines de desarrollo y pruebas es útil tenerlos todos
 
     } catch (e) {
       console.error('DB ERROR:', e)
@@ -64,6 +73,8 @@ export class RockwellModel {
   }
 
 }
+
+
 /*
   static async delete ({ id }) {
     // ejercio fácil: crear el delete
