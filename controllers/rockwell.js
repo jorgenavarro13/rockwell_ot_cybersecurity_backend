@@ -24,6 +24,7 @@ export class RockwellController {
   
   create = async (req, res) => {
     const result = validateUser(req.body)
+    console.log('Validation result:', result) // Remove this line in production
 
     if (!result.success) {
     // 422 Unprocessable Entity
@@ -65,11 +66,23 @@ export class RockwellController {
     }
     try {
       const data = jwt.verify(token, process.env.SECRET_JWT_KEY)
-      return res.json({ activeSession:true, data })
+      return res.json({ activeSession:true, data, isAdmin: data.role === 2}) // Adjust hardcoded role check as needed, use value from database
     }catch {
       return res.json({ message: 'Invalid token' })
     }
+
   }
+
+    checkEmail = async (req, res) => {
+      const { email } = req.query
+
+      const user = await this.model.checkEmail({ email })
+
+      if (user) {
+        return res.json({ exists: true })
+      }
+      return res.json({ exists: false })
+    }
 
   /*
   delete = async (req, res) => {

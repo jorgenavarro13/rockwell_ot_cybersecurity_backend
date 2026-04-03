@@ -72,6 +72,12 @@ export class RockwellModel {
     }
   }
 
+    static async checkEmail ({ email }) {
+      const user = await pg `
+      SELECT * FROM users WHERE email=${email}
+      `
+      return (user.length > 0)
+    }
 }
 
 
