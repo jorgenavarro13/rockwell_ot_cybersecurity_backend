@@ -16,7 +16,7 @@ async function verifyPassword(password, userHashedPassword) {
     return false;
   }
 
-  return await argon2.verify(password, userHashedPassword);
+  return await argon2.verify( userHashedPassword, password);
 }
 
 export const auth = {

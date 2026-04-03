@@ -78,6 +78,27 @@ export class RockwellModel {
       `
       return (user.length > 0)
     }
+
+    static async login ({input}) {
+      const {email,password} = input
+
+      const databaseUser = await pg `
+      SELECT password_hash FROM users WHERE email=${email} 
+      `
+      const hashedPassword = databaseUser[0]?.password_hash;
+
+      if (!hashedPassword) { return { success: false, message: 'Invalid email or password' } }
+
+      const isMatch = await auth.verifyPassword(password,hashedPassword);
+
+      if (!isMatch) { return { success: false, message: 'Invalid email or password' };}
+
+      const user = await pg `
+      SELECT user_id, name, role_id FROM users WHERE email=${email} 
+      `
+      return ({ success: true, user_id: user[0].user_id, name: user[0].name, role: user[0].role_id }) ;
+
+    }
 }
 
 
