@@ -1,5 +1,4 @@
 import express, { json } from 'express'
-import cors from 'cors'
 import { corsMiddleware } from './middlewares/cors.js'
 import { createRockwellRouter } from './routes/rockwell.js'
 import cookieParser from 'cookie-parser'
