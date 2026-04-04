@@ -5,14 +5,14 @@ import { updateMissingFieldsRegister } from '../../helpers/updateMissingFieldsRe
 export class RockwellModel {
   static async getAll ({ type }) {
     const users = await pg`
-    SELECT * FROM users;
+    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id FROM users;
     `
     return users
   }
   
   static async getById ({ id }) {
     const user = await pg `
-    SELECT * 
+    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id
     FROM users 
     WHERE user_id= ${ id }
     `
