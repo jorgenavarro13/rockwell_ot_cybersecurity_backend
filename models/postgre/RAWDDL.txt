@@ -1,0 +1,130 @@
+
+/*
+Mi intención es que un usuario pueda tener su tipo de usuario, como interesado, comprador, etc, entonces usuario referenciaria a type of user, relación 1:1 estaría bien pero probablemente para parmintir  varias opciones también estaría bueno 1:n
+
+Los roles probablemente no cambien tanto entonces creo que esta bien
+para el pk de matches, que no basta con haberla generado entre las otras 3? Que estrategia me sugieres ahí
+Que dataset recomiendas para el llenado de países y regiones, probablemente máximo sean 20 pero estaría bueno saber
+
+Sobre la empresa, solo nos interesa si pertenece a una empresa relacionada a rockwell, entonces no necesitamos tantos datos
+seria un tipo de pregunta. Haz contratado los servicios de rockwell, si si le pides especificar la compañia, si no simplemente se registrara
+como user type interested o "nuevo"
+
+Sobre el dataset, todavía no se de alguno bueno para los paises
+
+Para el score máximo con una consulta basta no? Consultas cual es el puntaje mayor de todos los juegos de un jugador a lo largo del tiempo
+
+Dos partidas es practicamente que sean al mismo tiempo y además si cada uno debería tener un identificador, mi duda, es, como desde unity podría saber cuando un usuario ha iniciado una partida y cuando lo termine, me imagino un trigger que al iniciar la partida "cree la partida" y ya cuando termine se terminen de registrar todos los demás campos con las variables que tenemos en unity
+
+Que metrica mostraría aprendizaje, bueno el numero de racha osea cuanto ha acertado sin fallar o del historico sacar el score de cada usuario y graficarlo
+
+La tabla game es una partida, pero no se como llamarlo bien en ingles
+Hasta el momento no se usará UUID por motivos de aprendizaje y debugeo
+   La tabla empresa no se como podría empezar la relación pero puede ser interesante
+   El usuario no tengo definido que roles, solo pensaba en esos y capaz y estaba perdiendo la parte de administrador
+   Los paises, igual me interesaria ver que atributos agregarle
+
+   Me interesa saber que tiempo han pasado, su evolución de scores o aciertos
+   Tambien de donde son los que mas juegan  o que relación tienen con la empresa
+    Probablemente si necesite más cosas durante el juego pero en esta fase no están todavía definidos 100 porciento
+
+   La tabla que más va a crecer es la de usuario y la de relación con game
+
+   Que podría usar para el hashing de la contraseña
+
+    Multijugador no estará soportado al momento
+ */
+/* También queremos saber de que paises nos estan contactando, pero para cumplir con las formas normales
+   se hizo una tabla y aparte guardaremos el enlace al svg de la bandera relacionada a ese pais
+ */
+
+
+
+DROP TABLE IF EXISTS countries CASCADE ;
+DROP TABLE IF EXISTS type_users CASCADE ;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS user_roles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS games CASCADE;
+DROP TABLE IF EXISTS matches CASCADE;
+
+CREATE TABLE countries
+(
+    country_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    logo TEXT NOT NULL
+);
+
+/*Tipo de usuario y su relación con la empresa, desconocida, interesado, consumidor, trabajador*/
+CREATE TABLE type_users
+(
+    type_id SERIAL PRIMARY KEY,
+    relation TEXT NOT NULL
+);
+/* Un usuario es un potencial comprador de la empresa, nos interesa saber  que relación tiene con la empresa para motivos
+   de marketing y rastreabilidad de posibles mercados, si es que tiene alguna relación con la empresa nos interesa
+   saber por parte de que empresa, además que nos interesa saber su progreso a lo largo de los juegos para ver que tan efectivo
+   es el juego educativo enseñando los temas*/
+
+CREATE TABLE roles
+(
+    role_id SERIAL PRIMARY KEY,
+    description TEXT UNIQUE CHECK(LENGTH(description)<30)
+);
+
+CREATE TABLE users
+(
+    user_id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    country INT REFERENCES countries (country_id),
+    email TEXT NOT NULL UNIQUE CHECK (LENGTH(email) < 100),
+    password_hash TEXT NOT NULL,
+    phone TEXT UNIQUE CHECK ( LENGTH(phone) < 13 ),
+    type_of_user INT REFERENCES type_users(type_id),
+    company TEXT,
+    birthday timestamptz,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_banned BOOLEAN DEFAULT FALSE
+);
+
+
+CREATE TABLE user_roles
+(
+    user_id BIGINT,
+    role_id BIGINT,
+    PRIMARY KEY (user_id,role_id),
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY  (role_id) REFERENCES roles(role_id)
+);
+
+
+/* Esta tabla aloja los distintos videojuegos que va a tener la plataforma para poder relacionarlos*/
+CREATE TABLE games
+(
+    game_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+/*Tabla intermedia para users y juego
+  UTILIDAD: Registrar cada juego jugado por cada jugador, relacionando de manera única cada juego,
+  aunque no es tan eficiente para data intensive aplications pero para propositos de colección de data esta ok*/
+
+CREATE TABLE  matches
+(
+    user_id BIGINT,
+    game_id INT,
+    time_start  TIMESTAMPTZ DEFAULT now(),
+    /* La duración del juego es un elemento calculado*/
+    date_end TIMESTAMPTZ,
+    score INT NOT NULL DEFAULT 0,
+    aciertos INT NOT NULL DEFAULT 0,
+    power_ups INT NOT NULL DEFAULT 0,
+    racha INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (user_id,game_id,time_start),
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (game_id) REFERENCES games(game_id)
+)
+
