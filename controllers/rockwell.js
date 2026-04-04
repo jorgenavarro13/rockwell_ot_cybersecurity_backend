@@ -47,11 +47,13 @@ export class RockwellController {
     , {expiresIn:'1h'}
     )
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 3600000, // 1 hour
        sameSite: 'lax',
-       secure: false
+       secure: isProduction
     })
     .status(201)
     .json( {newUser} )
@@ -105,12 +107,14 @@ export class RockwellController {
         , process.env.SECRET_JWT_KEY
         , {expiresIn:'1h'}
         )
+        
+        const isProduction = process.env.NODE_ENV === 'production';
 
         res.cookie('token', token, {
           httpOnly: true,
           maxAge: 3600000, // 1 hour
            sameSite: 'lax',
-           secure: false
+           secure: isProduction
         })
         .json({ success: true })
     }
