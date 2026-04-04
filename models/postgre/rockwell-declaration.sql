@@ -19,7 +19,7 @@ CREATE TABLE countries
 CREATE TABLE type_users
 (
     type_id SERIAL PRIMARY KEY,
-    relation TEXT NOT NULL UNIQUE,
+    relation TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE roles
@@ -43,7 +43,7 @@ CREATE TABLE users
     password_hash TEXT NOT NULL,
     phone TEXT UNIQUE CHECK ( LENGTH(phone) < 14 ),
     type_of_user INT NOT NULL REFERENCES type_users(type_id),
-    role_id INT REFERENCES roles(role_id) DEFAULT (SELECT role_id FROM roles WHERE description = 'user'),
+    role_id INT REFERENCES roles(role_id) DEFAULT get_default_role(),
     company_id INT REFERENCES companies(company_id),
     birthday DATE,
     is_active BOOLEAN DEFAULT TRUE,

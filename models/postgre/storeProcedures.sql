@@ -81,3 +81,7 @@ AS $$
     end;
     $$;
     
+CREATE FUNCTION get_default_role()
+RETURNS INT AS $$
+  SELECT role_id FROM roles WHERE description = 'user';
+$$ LANGUAGE SQL;
