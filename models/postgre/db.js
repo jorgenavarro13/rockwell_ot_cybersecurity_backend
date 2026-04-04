@@ -3,11 +3,15 @@ import 'dotenv/config'
 
 const pg = postgres(process.env.SERVICE_URI)
 
-if (!pg) {
-  console.error('Failed to connect to PostgreSQL database')
-} else {
-  console.log('Successfully connected to PostgreSQL database')
-} 
+;(async () => {
+  try {
+    await pg`select 1`
+    console.log('Successfully connected to PostgreSQL database')
+  } catch (error) {
+    console.error('Failed to connect to PostgreSQL database', error)
+    process.exit(1)
+  }
+})()
 export default pg;
 
 
