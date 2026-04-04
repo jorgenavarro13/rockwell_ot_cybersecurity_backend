@@ -85,3 +85,8 @@ CREATE FUNCTION get_default_role()
 RETURNS INT AS $$
   SELECT role_id FROM roles WHERE description = 'user';
 $$ LANGUAGE SQL;
+
+CREATE FUNCTION get_admin_role()
+RETURNS INT AS $$
+  SELECT role_id FROM roles WHERE description = 'admin';
+$$ LANGUAGE SQL;

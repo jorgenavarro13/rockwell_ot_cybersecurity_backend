@@ -69,7 +69,13 @@ export class RockwellController {
     try {
       const data = jwt.verify(token, process.env.SECRET_JWT_KEY)
       console.log(data);
-      return res.json({ activeSession:true, data, isAdmin: data.role === 2}) // Adjust hardcoded role check as needed, use value from database
+      
+      const adminRole = await this.model.getAdminRoleId();
+
+      console.log('Admin role ID:', adminRole); // Remove this line in production
+
+      console.log('User is admin:', data.role === adminRole); // Remove this line in production
+      return res.json({ activeSession:true, data, isAdmin: data.role === adminRole })
     }catch {
       return res.json({ message: 'Invalid token' })
     }
@@ -107,7 +113,7 @@ export class RockwellController {
         , process.env.SECRET_JWT_KEY
         , {expiresIn:'1h'}
         )
-        
+
         const isProduction = process.env.NODE_ENV === 'production';
 
         res.cookie('token', token, {

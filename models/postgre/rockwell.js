@@ -99,6 +99,14 @@ export class RockwellModel {
       return ({ success: true, user_id: user[0].user_id, name: user[0].name, role: user[0].role_id }) ;
 
     }
+
+    static async getAdminRoleId() {
+      const result = await pg `
+        SELECT get_admin_role();
+      `;
+
+      return result[0]?.get_admin_role ?? null;
+    }
 }
 
 
