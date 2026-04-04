@@ -39,7 +39,8 @@ export class RockwellModel {
 
 
     try {
-      await pg `
+      // Use RETURNING to get the new user_id atomically, avoiding an extra SELECT round-trip
+      const inserted = await pg `
       INSERT INTO users
       (name, email, password_hash, type_of_user) 
       VALUES
@@ -48,16 +49,14 @@ export class RockwellModel {
         ${email},
         ${hashedPassword},
         (SELECT type_id FROM type_users WHERE relation = ${typeOfUser})
-      );
+      )
+      RETURNING user_id;
       `
 
-    const id= await pg `
-      SELECT user_id FROM users WHERE email=${email}
-      `
-      console.log(id[0].user_id) // Remove this line in production;
+      const userId = inserted[0].user_id;
     
       try{
-        await updateMissingFieldsRegister(id[0].user_id, country, birthday, phone, company)
+        await updateMissingFieldsRegister(userId, country, birthday, phone, company)
       } catch (e){ console.warn('Error updating missing fields:', e) }
 
      const user = await pg `
