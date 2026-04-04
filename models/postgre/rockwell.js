@@ -19,7 +19,7 @@ export class RockwellModel {
 
     if (user.length === 0) return null
 
-    return user
+    return user[0]
   }
 
 
@@ -73,7 +73,7 @@ export class RockwellModel {
 
     static async checkEmail ({ email }) {
       const user = await pg `
-      SELECT * FROM users WHERE email=${email}
+      SELECT 1 FROM users WHERE email=${email} LIMIT 1
       `
       return (user.length > 0)
     }
