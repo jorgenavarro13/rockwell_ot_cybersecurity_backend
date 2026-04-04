@@ -8,7 +8,7 @@ export const tokenParser = () => (req, res, next) => {
   req.session = {user : null} // Este es un objeto que yo cree para almacenar la info, podría ser alguna otra cosa
 
   try{
-    data = jwt.verify(token,SECRET_JWT_KEY); // Verificamos la cookie
+    data = jwt.verify(token,process.env.SECRET_JWT_KEY); // Verificamos la cookie
 
     req.session.user = data;
 
