@@ -6,10 +6,8 @@ const ACCEPTED_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:5432',
   'http://localhost:5173',
-  'https://jorgenavarro13.github.io'
-  // // 'https://jorgenavarro13.github.io/rockwell_ot_cybersecurity_frontend/',
-  // // 'https://jorgenavarro13.github.io/rockwell_ot_cybersecurity_frontend/#'
-  // // 'https://jorgenavarro13.github.io/rockwell_ot_cybersecurity_frontend/#/'
+  'https://jorgenavarro13.github.io',
+  'https://localhost:3333'
 ]
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
