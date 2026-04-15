@@ -75,7 +75,13 @@ export class RockwellController {
       console.log('Admin role ID:', adminRole); // Remove this line in production
 
       console.log('User is admin:', data.role === adminRole); // Remove this line in production
-      return res.json({ activeSession:true, data, isAdmin: data.role === adminRole })
+      return res.json({ activeSession:true, 
+        user :{
+            username: data.name,
+            user_id: data.user_id,
+            isAdmin: data.role === adminRole
+        }
+      })
     }catch {
       return res.json({ message: 'Invalid token' })
     }
@@ -107,6 +113,7 @@ export class RockwellController {
         return res.status(401).json(result)
       }
       console.log(result)
+      const adminRole = await this.model.getAdminRoleId();
       
         const token = jwt.sign(
           {username:result.name, role:result.role, user_id: result.user_id}
@@ -122,7 +129,13 @@ export class RockwellController {
            sameSite: 'lax',
            secure: isProduction
         })
-        .json({ success: true })
+        .json({ success: true,
+          user: {
+            username: result.name,
+            user_id: result.user_id,
+            isAdmin: result.role === adminRole
+          }
+        })
     }
   /*
   delete = async (req, res) => {
