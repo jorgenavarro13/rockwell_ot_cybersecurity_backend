@@ -106,6 +106,38 @@ export class RockwellModel {
 
       return result[0]?.get_admin_role ?? null;
     }
+
+
+    static async getRanking() {
+      const ranking = await pg `
+        WITH best_matches AS (
+  SELECT DISTINCT ON (users.user_id)
+    users.user_id AS id,
+    users.name AS playername,
+    matches.score AS score,
+    matches.date_end::date AS date,
+
+    json_build_object(
+    'name', countries.name,
+    'flag', countries.logo,
+    'code', countries.code
+  ) AS country
+
+  FROM users
+  LEFT JOIN matches
+    ON matches.user_id = users.user_id
+  JOIN countries
+        ON  countries.country_id=users.country
+  ORDER BY users.user_id, matches.score DESC
+)
+
+SELECT *,
+  RANK() OVER (ORDER BY score DESC NULLS LAST) AS position
+FROM best_matches;
+        `;
+
+      return ranking;
+    }
 }
 
 
