@@ -8,7 +8,9 @@ export const createRockwellRouter = ({ model }) => {
 
   const rockwellController = new RockwellController({ model })
   const adminController = new AdminController({ model })
-
+  
+  adminRouter.get('/dashboard', adminController.getDashboardData) 
+  // Endpoint para obtener datos del dashboard
   rockwellRouter.get('/session', rockwellController.session) // Middleware para obtención de token
 
   rockwellRouter.get('/user', rockwellController.getAll)
@@ -21,7 +23,6 @@ export const createRockwellRouter = ({ model }) => {
 
   rockwellRouter.get('/ranking', rockwellController.getRanking)
 
-  adminRouter.get('/admin/dashboard', adminController.getDashboardData) // Endpoint para obtener datos del dashboard
 
   // adminRouter.get('/dashboard/stats', adminController.getDashboardStats) // Endpoint para obtener estadísticas del dashboard
 
@@ -30,5 +31,5 @@ export const createRockwellRouter = ({ model }) => {
   // rockwellRouter.delete('/:id', rockwellController.delete)
   // rockwellRouter.patch('/:id', rockwellController.update)
 
-  return rockwellRouter
+  return { rockwellRouter, adminRouter }  
 }
