@@ -1,10 +1,14 @@
 import { Router } from 'express'
 import { RockwellController } from '../controllers/rockwell.js'
+import { AdminController } from '../controllers/AdminController.js'
 
 export const createRockwellRouter = ({ model }) => {
   const rockwellRouter = Router()
+  const adminRouter = Router()
 
   const rockwellController = new RockwellController({ model })
+  const adminController = new AdminController({ model })
+
   rockwellRouter.get('/session', rockwellController.session) // Middleware para obtención de token
 
   rockwellRouter.get('/user', rockwellController.getAll)
@@ -16,6 +20,10 @@ export const createRockwellRouter = ({ model }) => {
   rockwellRouter.post('/login', rockwellController.login)
 
   rockwellRouter.get('/ranking', rockwellController.getRanking)
+
+  adminRouter.get('/admin/dashboard', adminController.getDashboardData) // Endpoint para obtener datos del dashboard
+
+  // adminRouter.get('/dashboard/stats', adminController.getDashboardStats) // Endpoint para obtener estadísticas del dashboard
 
   // rockwellRouter.post('/logout', rockwellController.logout)
 

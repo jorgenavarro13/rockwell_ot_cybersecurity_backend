@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 export class RockwellController {
   constructor ({ model }) {
     this.model = model
-    // console.log("Model en controller:", !!model)
   }
 
   getRanking = async (req, res) => {
