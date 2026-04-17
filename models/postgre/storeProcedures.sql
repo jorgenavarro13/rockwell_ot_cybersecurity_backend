@@ -90,3 +90,13 @@ CREATE FUNCTION get_admin_role()
 RETURNS INT AS $$
   SELECT role_id FROM roles WHERE description = 'admin';
 $$ LANGUAGE SQL;
+
+---- TRIGGERS
+
+---- When in a match/game, if the new score is higher than the previous one, update it
+
+--- When inserting a new person, if the company does not exist, create it.
+
+--- When inserting more than 3 failed login attempts, ban the user.
+
+--- When more than 20 matches are played for the same person, delete the oldest one.
