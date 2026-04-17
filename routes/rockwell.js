@@ -15,6 +15,8 @@ export const createRockwellRouter = ({ model }) => {
   
   rockwellRouter.post('/login', rockwellController.login)
 
+  rockwellRouter.get('/ranking', rockwellController.getRanking)
+
   // rockwellRouter.post('/logout', rockwellController.logout)
 
   // rockwellRouter.delete('/:id', rockwellController.delete)

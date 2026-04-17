@@ -7,6 +7,12 @@ export class RockwellController {
     // console.log("Model en controller:", !!model)
   }
 
+  getRanking = async (req, res) => {
+          const ranking = await this.model.getRanking()
+          console.log(ranking)
+          res.json( ranking )
+        }
+
   getAll = async (req, res) => {
     const { type } = req.query
     const users = await this.model.getAll({ type })
@@ -137,6 +143,10 @@ export class RockwellController {
           }
         })
     }
+
+
+
+
   /*
   delete = async (req, res) => {
     const { id } = req.params
