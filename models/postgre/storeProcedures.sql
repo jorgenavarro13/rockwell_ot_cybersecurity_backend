@@ -81,12 +81,65 @@ AS $$
     end;
     $$;
     
-CREATE FUNCTION get_default_role()
-RETURNS INT AS $$
-  SELECT role_id FROM roles WHERE description = 'user';
-$$ LANGUAGE SQL;
 
-CREATE FUNCTION get_admin_role()
-RETURNS INT AS $$
-  SELECT role_id FROM roles WHERE description = 'admin';
-$$ LANGUAGE SQL;
+-- Single UPDATE — already atomic, no transaction needed.
+CREATE OR REPLACE PROCEDURE sp_failed_login(p_user_id BIGINT)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM users WHERE user_id = p_user_id) THEN
+        RAISE EXCEPTION 'User % not found', p_user_id;
+    END IF;
+
+    UPDATE user_security
+    SET failed_attempts = failed_attempts + 1
+    WHERE user_id = p_user_id;
+END;
+$$;
+
+
+-- Multiple dependent writes: needs atomicity.
+-- EXCEPTION re-raise rolls back the PL/pgSQL savepoint, undoing all writes on failure.
+CREATE OR REPLACE PROCEDURE sp_successful_login(p_user_id BIGINT)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_is_banned  BOOLEAN;
+    v_unban_date DATE;
+BEGIN
+    SELECT u.is_banned, s.unban_date
+    INTO   v_is_banned, v_unban_date
+    FROM   users u
+    JOIN   user_security s ON s.user_id = u.user_id
+    WHERE  u.user_id = p_user_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'User % not found', p_user_id;
+    END IF;
+
+    IF v_is_banned AND v_unban_date IS NOT NULL AND CURRENT_DATE >= v_unban_date THEN
+        UPDATE users         SET is_banned  = FALSE WHERE user_id = p_user_id;
+        UPDATE user_security SET unban_date = NULL  WHERE user_id = p_user_id;
+    END IF;
+
+    UPDATE user_security
+    SET failed_attempts   = 0,
+        deactivation_date = CURRENT_DATE + INTERVAL '1 year'
+    WHERE user_id = p_user_id;
+
+    INSERT INTO login_logs(user_id) VALUES (p_user_id);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+
+---- TRIGGERS
+
+---- When in a match/game, if the new score is higher than the previous one, update it
+
+--- When inserting a new person, if the company does not exist, create it.
+
+--- When inserting more than 3 failed login attempts, ban the user.
+
+--- When more than 20 matches are played for the same person, delete the oldest one.
