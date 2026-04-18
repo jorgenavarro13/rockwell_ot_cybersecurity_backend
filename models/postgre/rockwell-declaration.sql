@@ -1,4 +1,6 @@
 
+DROP TABLE IF EXISTS login_logs CASCADE;
+DROP TABLE IF EXISTS user_security CASCADE;
 DROP TABLE IF EXISTS countries CASCADE ;
 DROP TABLE IF EXISTS type_users CASCADE ;
 DROP TABLE IF EXISTS roles CASCADE;
@@ -48,6 +50,22 @@ CREATE TABLE users
     birthday DATE,
     is_active BOOLEAN DEFAULT TRUE,
     is_banned BOOLEAN DEFAULT FALSE
+);
+
+
+CREATE TABLE user_security
+(
+    user_id          BIGINT PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+    deactivation_date DATE NOT NULL DEFAULT (CURRENT_DATE + INTERVAL '1 year'),
+    failed_attempts  INT NOT NULL DEFAULT 0,
+    unban_date       DATE
+);
+
+CREATE TABLE login_logs
+(
+    log_id    BIGSERIAL PRIMARY KEY,
+    user_id   BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    login_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
