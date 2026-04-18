@@ -3,18 +3,101 @@ import {auth} from '../../services/authService.js';
 import { updateMissingFieldsRegister } from '../../helpers/updateMissingFieldsRegister.js';
 
 export class RockwellModel {
+
+  static async getDashboardData() {
+    const data = await pg `
+      SELECT DISTINCT ON (users.user_id)
+      users.name AS user_name,
+      users.email AS email,
+      matches.score AS score,
+      (SELECT COUNT(*) FROM matches) AS gamesplayed,
+      type_users.relation AS relation,
+      companies.name AS company_name,
+
+      json_build_object(
+        'name', countries.name,
+        'flag', countries.logo,
+        'code', countries.code
+      ) AS country
+
+    FROM users
+    LEFT JOIN matches
+      ON matches.user_id = users.user_id
+    JOIN countries
+      ON countries.country_id = users.country
+    JOIN type_users
+      ON type_users.type_id = users.type_of_user
+    LEFT JOIN companies
+      ON companies.company_id = users.company_id
+
+    ORDER BY users.user_id, matches.score DESC NULLS LAST;
+    ;`
+    
+    return data;
+  }
+
   static async getAll ({ type }) {
     const users = await pg`
-    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id FROM users;
+    SELECT
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      COALESCE(cmp.name, '') AS company,
+      u.birthday,
+      u.role_id,
+      u.is_active AS state,
+      COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
+    FROM users u
+    LEFT JOIN companies cmp ON cmp.company_id = u.company_id
+    LEFT JOIN matches m ON m.user_id = u.user_id
+    GROUP BY
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      cmp.name,
+      u.birthday,
+      u.role_id,
+      u.is_active
+    ORDER BY u.user_id;
     `
     return users
   }
   
   static async getById ({ id }) {
     const user = await pg `
-    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id
-    FROM users 
-    WHERE user_id= ${ id }
+    SELECT
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      COALESCE(cmp.name, '') AS company,
+      u.birthday,
+      u.role_id,
+      u.is_active AS state,
+      COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
+    FROM users u
+    LEFT JOIN companies cmp ON cmp.company_id = u.company_id
+    LEFT JOIN matches m ON m.user_id = u.user_id
+    WHERE u.user_id = ${ id }
+    GROUP BY
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      cmp.name,
+      u.birthday,
+      u.role_id,
+      u.is_active
     `
 
     if (user.length === 0) return null
@@ -105,6 +188,38 @@ export class RockwellModel {
       `;
 
       return result[0]?.get_admin_role ?? null;
+    }
+
+
+    static async getRanking() {
+      const ranking = await pg `
+        WITH best_matches AS (
+        SELECT DISTINCT ON (users.user_id)
+          users.user_id AS id,
+          users.name AS playername,
+          matches.score AS score,
+          matches.date_end::date AS date,
+
+          json_build_object(
+          'name', countries.name,
+          'flag', countries.logo,
+          'code', countries.code
+        ) AS country
+
+        FROM users
+        LEFT JOIN matches
+          ON matches.user_id = users.user_id
+        JOIN countries
+              ON  countries.country_id=users.country
+        ORDER BY users.user_id, matches.score DESC
+      )
+
+      SELECT *,
+        RANK() OVER (ORDER BY score DESC NULLS LAST) AS position
+      FROM best_matches;
+        `;
+
+      return ranking;
     }
 }
 

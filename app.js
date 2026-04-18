@@ -11,13 +11,15 @@ export const App = ({ model }) => {
   app.use(cookieParser())
   app.use(tokenParser())
   // console.log("DB conectada:", !!model)
-  //app.use(cors())
   app.use(json())
   app.use(morgan('tiny'))
   app.use(corsMiddleware())
   app.disable('x-powered-by')
 
-  app.use('/', createRockwellRouter({ model }))
+  const { rockwellRouter, adminRouter } = createRockwellRouter({ model })
+  
+  app.use('/', rockwellRouter)
+  app.use('/admin', adminRouter)
 
   const PORT = process.env.LOCALPORT || 3000
   app.listen(PORT, () => {
