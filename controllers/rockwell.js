@@ -143,6 +143,18 @@ export class RockwellController {
         })
     }
 
+  logout = async (req, res) => {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: isProduction,
+    });
+
+    return res.json({ success: true });
+  }
+
 
 
 

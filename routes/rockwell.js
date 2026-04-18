@@ -20,6 +20,7 @@ export const createRockwellRouter = ({ model }) => {
   rockwellRouter.get('/check-email',rockwellController.checkEmail) // Endpoint para verificar si el correo ya existe
   
   rockwellRouter.post('/login', rockwellController.login)
+  rockwellRouter.post('/logout', rockwellController.logout)
 
   rockwellRouter.get('/ranking', rockwellController.getRanking)
 

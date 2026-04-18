@@ -38,16 +38,66 @@ export class RockwellModel {
 
   static async getAll ({ type }) {
     const users = await pg`
-    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id FROM users;
+    SELECT
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      COALESCE(cmp.name, '') AS company,
+      u.birthday,
+      u.role_id,
+      u.is_active AS state,
+      COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
+    FROM users u
+    LEFT JOIN companies cmp ON cmp.company_id = u.company_id
+    LEFT JOIN matches m ON m.user_id = u.user_id
+    GROUP BY
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      cmp.name,
+      u.birthday,
+      u.role_id,
+      u.is_active
+    ORDER BY u.user_id;
     `
     return users
   }
   
   static async getById ({ id }) {
     const user = await pg `
-    SELECT user_id, name, country, email, phone, type_of_user, company, birthday, role_id
-    FROM users 
-    WHERE user_id= ${ id }
+    SELECT
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      COALESCE(cmp.name, '') AS company,
+      u.birthday,
+      u.role_id,
+      u.is_active AS state,
+      COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
+    FROM users u
+    LEFT JOIN companies cmp ON cmp.company_id = u.company_id
+    LEFT JOIN matches m ON m.user_id = u.user_id
+    WHERE u.user_id = ${ id }
+    GROUP BY
+      u.user_id,
+      u.name,
+      u.country,
+      u.email,
+      u.phone,
+      u.type_of_user,
+      cmp.name,
+      u.birthday,
+      u.role_id,
+      u.is_active
     `
 
     if (user.length === 0) return null
