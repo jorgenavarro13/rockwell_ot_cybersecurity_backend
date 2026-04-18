@@ -52,7 +52,7 @@ export class RockwellController {
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 3600000, // 1 hour
-       sameSite: 'lax',
+       sameSite: isProduction ? 'none' : 'lax',
        secure: isProduction
     })
     .status(201)
@@ -119,7 +119,7 @@ export class RockwellController {
         res.cookie('token', token, {
           httpOnly: true,
           maxAge: 3600000, // 1 hour
-           sameSite: 'lax',
+           sameSite: isProduction ? 'none' : 'lax',
            secure: isProduction
         })
         .json({ success: true })
