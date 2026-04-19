@@ -21,10 +21,8 @@ const userSchema = z.object({
     message: 'Email must be a valid email address'
   }),
 
-  password: z.string().min(6,{
-    message: 'Password must be at least 6 characters long'
-  }),
-  
+  password: z.string(), // TODO ! Add a layer where the lenght of the password is checked, and maybe the complexity
+
   phone:z.string().max(13).optional(),
 
   typeOfUser:z.enum(['Employee', 'Client', 'Not related']),
