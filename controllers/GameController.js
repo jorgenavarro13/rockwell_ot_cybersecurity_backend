@@ -7,16 +7,21 @@ export class GameController {
         this.model = model
     }
 
+    // TODO ! Add error handling to all these endpoints
+
+    // TODO ! Validate security of these endpoints, maybe add a middleware that checks if the user is authenticated, and if the token is valid, and if the user has the right permissions to access these endpoints
+
     createGame = async (req, res) => {
-        const gameData = req.body;
-        console.log('Received game data:', gameData); // Debugging line
-        const game = await this.model.createGame({ gameData });
+        const userData = req.body;
+        console.log('Received game data:', userData); // Debugging line
+        const game = await this.model.createGame({ userData });
         return res.status(201).json(game);
     }
         
     getGame = async (req, res) => {
         const userData = req.body;
-        const gameData = await this.model.getGameData(userData);
+        //console.log('Received request for game data with:', userData); // Debugging line
+        const gameData = await this.model.getGame({ userData });
         return res.status(200).json(gameData);
     }
 

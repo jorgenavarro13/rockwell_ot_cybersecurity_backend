@@ -223,12 +223,12 @@ export class RockwellModel {
     }
 
 
-    static async createGame ({ gameData }) {
-      console.log(gameData);
+    static async createGame ({ userData }) {
+      console.log(userData);
       const {
         user_id,
         game_id,
-      } = gameData
+      } = userData
 
       const game =  await pg `
         INSERT INTO matches (user_id, game_id)
@@ -237,6 +237,29 @@ export class RockwellModel {
       `
 
       return game[0];
+    }
+
+    static async getGame ({ userData }) {
+      //console.log(userData);
+      const {
+        user_id,
+        game_id,
+        time_start
+      } = userData
+
+      const gameInfo = await pg `
+        SELECT *
+        FROM matches
+        WHERE user_id = ${user_id}
+          AND game_id = ${game_id}
+          AND time_start BETWEEN ${time_start}::timestamp - interval '1 ms'
+                              AND ${time_start}::timestamp + interval '1 ms'
+        ;`
+
+      // Postgre is very special with time, so to avoid any issues with the time comparison, we use a range of 2 milliseconds around the provided time_start. This should be enough to account for any discrepancies in time storage and retrieval, while still ensuring we get the correct game record.
+
+      console.log('Game info retrieved:', gameInfo); // Debugging line
+      return gameInfo[0];
     }
 
 }
