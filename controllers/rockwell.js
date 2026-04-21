@@ -67,7 +67,7 @@ export class RockwellController {
   
   session = async (req,res) => {
     // Todo: Possibly change for the tokenParser middleware option but it's working fine now
-    const token = req.cookies.token
+    const token = req.cookies.token;
     if (!token) {
       return res.status(401).json({ activeSession:false})
     }
@@ -82,7 +82,7 @@ export class RockwellController {
       console.log('User is admin:', data.role === adminRole); // Remove this line in production
       return res.json({ activeSession:true, 
         user :{
-            username: data.name,
+            username: data.username,
             user_id: data.user_id,
             isAdmin: data.role === adminRole
         }
