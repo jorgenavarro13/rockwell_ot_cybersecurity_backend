@@ -221,6 +221,24 @@ export class RockwellModel {
 
       return ranking;
     }
+
+
+    static async createGame ({ gameData }) {
+      console.log(gameData);
+      const {
+        user_id,
+        game_id,
+      } = gameData
+
+      const game =  await pg `
+        INSERT INTO matches (user_id, game_id)
+        VALUES ( ${user_id}, ${game_id} )
+        RETURNING *;
+      `
+
+      return game[0];
+    }
+
 }
 
 
