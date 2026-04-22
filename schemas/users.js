@@ -18,6 +18,7 @@ const userSchema = z.object({
   country:country.optional(),
 
   email: z.email({
+    invalid_type_error: 'Email must be a valid email address',
     message: 'Email must be a valid email address'
   }),
 
