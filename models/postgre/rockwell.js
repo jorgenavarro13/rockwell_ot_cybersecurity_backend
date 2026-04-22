@@ -161,6 +161,13 @@ export class RockwellModel {
       return (user.length > 0)
     }
 
+    static async checkPhone ({ phone }) {
+      const user = await pg `
+      SELECT 1 FROM users WHERE phone=${phone} LIMIT 1
+      `
+      return (user.length > 0)
+    }
+
     static async login ({input}) {
       const {email,password} = input
 

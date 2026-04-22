@@ -34,7 +34,7 @@ export class RockwellController {
     if (!result.success) {
     // 422 Unprocessable Entity
     // 400 Bad Request
-      return res.status(400).json({ error: JSON.parse(result.error.message) })
+      return res.status(400).json( JSON.parse(result.error.message) )
     }
 
     let newUser = {};
@@ -97,6 +97,17 @@ export class RockwellController {
       const { email } = req.query
 
       const user = await this.model.checkEmail({ email })
+
+      if (user) {
+        return res.json({ exists: true })
+      }
+      return res.json({ exists: false })
+    }
+
+    checkPhone = async (req, res) => {
+      const { phone } = req.query
+
+      const user = await this.model.checkPhone({ phone })
 
       if (user) {
         return res.json({ exists: true })
