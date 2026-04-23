@@ -144,7 +144,7 @@ export class RockwellModel {
 
      const user = await pg `
      SELECT * FROM users WHERE email=${email}`
-      
+    // TODO ! In production, consider selecting only the necessary fields instead of all user data, to enhance security and performance. For development and testing, having all fields can be useful for debugging.
     return user[0]; // user es una lista, entonces solo queremos el primer elemento de esta que es nuestro usuario
     // En producción se recomienda no pasar todos los datos, pero para fines de desarrollo y pruebas es útil tenerlos todos
 
