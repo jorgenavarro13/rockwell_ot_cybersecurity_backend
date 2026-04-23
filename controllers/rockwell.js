@@ -53,6 +53,7 @@ export class RockwellController {
     )
 
     const isProduction = process.env.NODE_ENV === 'production';
+    const adminRole = await this.model.getAdminRoleId();
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -61,8 +62,13 @@ export class RockwellController {
        secure: isProduction
     })
     .status(201)
-    .json( {newUser} )
-
+    .json({ success: true,
+          user: {
+            username: newUser.name,
+            user_id:  newUser.user_id,
+            isAdmin:  newUser.role === adminRole
+          }
+        })
   }
   
   session = async (req,res) => {
