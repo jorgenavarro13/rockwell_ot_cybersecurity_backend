@@ -87,18 +87,17 @@ CREATE TABLE games
 );
 
 
-CREATE TABLE  matches
+CREATE TABLE matches
 (
-    user_id BIGINT,
-    game_id INT,
-    time_start  TIMESTAMPTZ DEFAULT now(),
+    match_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id BIGINT NOT NULL,
+    game_id INT NOT NULL DEFAULT 1,
+    time_start TIMESTAMPTZ DEFAULT now(),
     date_end TIMESTAMPTZ,
     score INT NOT NULL DEFAULT 0,
     aciertos INT NOT NULL DEFAULT 0,
     power_ups INT NOT NULL DEFAULT 0,
     racha INT NOT NULL DEFAULT 0,
-
-    PRIMARY KEY (user_id,game_id,time_start),
 
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (game_id) REFERENCES games(game_id)
