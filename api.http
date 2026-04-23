@@ -41,3 +41,11 @@ Content-Type: application/json
     "typeOfUser": 2,
     "birthday": "1998-04-10"
 }
+
+### Jugar un juego
+POST http://localhost:3000/game/play
+Content-Type: application/json
+
+{
+    "user_id": 2
+}

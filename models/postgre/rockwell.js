@@ -231,7 +231,7 @@ export class RockwellModel {
 
       const game =  await pg `
         INSERT INTO matches (user_id,game_id)
-        VALUES ( ${user_id} ${1} )
+        VALUES ( ${user_id}::INT, ${1}::INT )
         RETURNING match_id;
       `
         // En esta fase solo se tiene un juego, pero en el futuro se pueden agregar más juegos, entonces el game_id se puede usar para diferenciarlos
