@@ -44,7 +44,7 @@ export class RockwellModel {
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      tu.relation AS type_of_user,
       COALESCE(cmp.name, '') AS company,
       u.birthday,
       u.role_id,
@@ -53,13 +53,14 @@ export class RockwellModel {
     FROM users u
     LEFT JOIN companies cmp ON cmp.company_id = u.company_id
     LEFT JOIN matches m ON m.user_id = u.user_id
+    LEFT JOIN type_users tu ON tu.type_id = u.type_of_user
     GROUP BY
       u.user_id,
       u.name,
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      tu.relation,
       cmp.name,
       u.birthday,
       u.role_id,
