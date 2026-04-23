@@ -16,10 +16,11 @@ export const App = ({ model }) => {
   app.use(corsMiddleware())
   app.disable('x-powered-by')
 
-  const { rockwellRouter, adminRouter } = createRockwellRouter({ model })
+  const { rockwellRouter, adminRouter, gameRouter } = createRockwellRouter({ model })
   
   app.use('/', rockwellRouter)
   app.use('/admin', adminRouter)
+  app.use('/game', gameRouter)
 
   const PORT = process.env.LOCALPORT || 3000
   app.listen(PORT, () => {

@@ -229,6 +229,80 @@ export class RockwellModel {
 
       return ranking;
     }
+
+
+    static async createGame ({ userData }) {
+      console.log(userData);
+      const {
+        user_id,
+      } = userData
+
+      const game =  await pg `
+        INSERT INTO matches (user_id,game_id)
+        VALUES ( ${user_id}::INT, ${1}::INT )
+        RETURNING match_id;
+      `
+        // En esta fase solo se tiene un juego, pero en el futuro se pueden agregar más juegos, entonces el game_id se puede usar para diferenciarlos
+        // Hay que ser explicitos en la inserción desde el backend.
+      return game[0];
+    }
+
+    static async getGame ({ userData }) {
+      //console.log(userData);
+      const {
+        user_id,
+        game_id,
+        time_start
+      } = userData
+
+      const gameInfo = await pg `
+        SELECT *
+        FROM matches
+        WHERE user_id = ${user_id}
+          AND game_id = ${game_id}
+          AND time_start BETWEEN ${time_start}::timestamp - interval '1 ms'
+                              AND ${time_start}::timestamp + interval '1 ms'
+        ;`
+
+      // Postgre is very special with time, so to avoid any issues with the time comparison, we use a range of 2 milliseconds around the provided time_start. This should be enough to account for any discrepancies in time storage and retrieval, while still ensuring we get the correct game record.
+
+      console.log('Game info retrieved:', gameInfo); // Debugging line
+      return gameInfo[0];
+    }
+
+    static async GameOver ({matchData }) {
+      console.log(matchData);
+      const {
+        match_id
+      } = matchData
+
+      const result = await pg`
+        UPDATE matches
+        SET 
+          date_end = now() 
+        WHERE match_id = ${match_id}
+          AND date_end IS NULL
+        RETURNING match_id;
+      `;
+      return result[0];
+    }
+
+    static async updateScore ({gameData}) {
+      console.log(gameData);
+      const {
+        match_id,
+        score
+      } = gameData
+      const result = await pg`
+        UPDATE matches
+        SET 
+          score = ${score} 
+        WHERE match_id = ${match_id}
+        RETURNING match_id;
+      `;
+      return result[0];
+    }
+
 }
 
 
