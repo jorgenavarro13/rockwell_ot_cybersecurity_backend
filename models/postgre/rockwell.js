@@ -279,6 +279,22 @@ export class RockwellModel {
       return result[0];
     }
 
+    static async updateScore ({gameData}) {
+      console.log(gameData);
+      const {
+        match_id,
+        score
+      } = gameData
+      const result = await pg`
+        UPDATE matches
+        SET 
+          score = ${score} 
+        WHERE match_id = ${match_id}
+        RETURNING match_id;
+      `;
+      return result[0];
+    }
+
 }
 
 

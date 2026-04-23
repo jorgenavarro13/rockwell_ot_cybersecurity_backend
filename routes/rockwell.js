@@ -17,7 +17,8 @@ export const createRockwellRouter = ({ model }) => {
   /// GAME ENDPOINTS
   gameRouter.post('/play', gameController.createGame)
   gameRouter.get('/gameData', gameController.getGame) // Endpoint para obtener datos iniciales del juego, como el ranking, o los datos del usuario logueado
-  gameRouter.patch('/gameOver', gameController.gameOver) 
+  gameRouter.patch('/gameOver', gameController.gameOver)
+  gameRouter.patch('/updateScore', gameController.updateScore); // Endpoint para actualizar el score durante el juego, se puede llamar cada vez que el score cambie, o cada cierto tiempo, dependiendo de la lógica del juego.
 
 
   /// ADMIN ENDPOINTS

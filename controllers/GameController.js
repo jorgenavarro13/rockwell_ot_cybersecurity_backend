@@ -32,4 +32,11 @@ export class GameController {
         return res.status(200).json(result);
     }
 
+    updateScore = async (req, res) => {
+        const gameData = req.body;
+        console.log('Received score update data:', gameData); // Debugging line
+        const result = await this.model.updateScore({gameData});
+        return res.status(200).json(result);
+    }
+
 }
