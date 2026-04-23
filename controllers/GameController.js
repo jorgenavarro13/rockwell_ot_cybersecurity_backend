@@ -26,8 +26,9 @@ export class GameController {
     }
 
     gameOver= async (req, res) => {
-        const finalGameData = req.body;
-        const result = await this.model.GameOver(finalGameData);
+        const matchData = req.body;
+        console.log('Received game over data:', matchData); // Debugging line
+        const result = await this.model.GameOver({matchData});
         return res.status(200).json(result);
     }
 

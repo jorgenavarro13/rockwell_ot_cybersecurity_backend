@@ -49,3 +49,11 @@ Content-Type: application/json
 {
     "user_id": 2
 }
+
+### Game over
+PATCH http://localhost:3000/game/gameOver
+Content-Type: application/json
+
+{
+    "match_id": "74c6ac00-4cae-4fb5-bcf9-d92e2295dcb1"
+}

@@ -262,6 +262,23 @@ export class RockwellModel {
       return gameInfo[0];
     }
 
+    static async GameOver ({matchData }) {
+      console.log(matchData);
+      const {
+        match_id
+      } = matchData
+
+      const result = await pg`
+        UPDATE matches
+        SET 
+          date_end = now() 
+        WHERE match_id = ${match_id}
+          AND date_end IS NULL
+        RETURNING match_id;
+      `;
+      return result[0];
+    }
+
 }
 
 
