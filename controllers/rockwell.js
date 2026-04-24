@@ -82,7 +82,7 @@ export class RockwellController {
       console.log('User is admin:', data.role === adminRole); // Remove this line in production
       return res.json({ activeSession:true, 
         user :{
-            username: data.name,
+            username: data.username,
             user_id: data.user_id,
             isAdmin: data.role === adminRole
         }
