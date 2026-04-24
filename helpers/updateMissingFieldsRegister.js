@@ -31,6 +31,14 @@ const updateMissingFieldsRegister = async (id, country, birthday, phone, company
         CALL insert_user_phone(${user_id}::BIGINT, ${phone});
         `
       } 
+
+      if (company) {
+      await pg`
+        UPDATE users 
+        SET company_id = get_or_create_company(${company}::VARCHAR)
+        WHERE user_id = ${user_id}::BIGINT;
+      `;
+    }
     }
 
     export {updateMissingFieldsRegister};
