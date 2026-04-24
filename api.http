@@ -57,3 +57,12 @@ Content-Type: application/json
 {
     "match_id": "74c6ac00-4cae-4fb5-bcf9-d92e2295dcb1"
 }
+
+### Update score
+PATCH http://localhost:3000/game/updateScore
+Content-Type: application/json
+
+{
+    "match_id": "74c6ac00-4cae-4fb5-bcf9-d92e2295dcb1",
+    "score": 100
+}   
