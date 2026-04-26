@@ -83,11 +83,24 @@ export class RockwellModel {
       u.birthday,
       u.role_id,
       u.is_active AS state,
+      u.is_banned,
+      u.is_active,
+
+      json_build_object(
+        'name', countries.name,
+        'flag', countries.logo,
+        'code', countries.code
+      ) AS country,
+
+      (u.role_id = (SELECT get_admin_role())) AS is_admin,
+       
       COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
     FROM users u
     LEFT JOIN companies cmp ON cmp.company_id = u.company_id
     LEFT JOIN matches m ON m.user_id = u.user_id
-    WHERE u.user_id = ${ user_id }
+    JOIN countries
+      ON countries.country_id = u.country
+    WHERE u.user_id = ${ user_id }::INT
     GROUP BY
       u.user_id,
       u.name,
@@ -98,7 +111,13 @@ export class RockwellModel {
       cmp.name,
       u.birthday,
       u.role_id,
-      u.is_active
+      u.is_active,
+      countries.name,
+      countries.logo,
+      countries.code,
+      u.is_banned,
+      u.is_active,
+      u.role_id;
     `
 
     if (user.length === 0) return null
