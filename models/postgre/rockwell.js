@@ -78,7 +78,7 @@ export class RockwellModel {
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      type_users.relation AS type_of_user,
       COALESCE(cmp.name, '') AS company,
       u.birthday,
       u.role_id,
@@ -100,6 +100,8 @@ export class RockwellModel {
     LEFT JOIN matches m ON m.user_id = u.user_id
     JOIN countries
       ON countries.country_id = u.country
+    JOIN type_users
+      ON type_users.type_id = u.type_of_user
     WHERE u.user_id = ${ user_id }::INT
     GROUP BY
       u.user_id,
@@ -107,7 +109,7 @@ export class RockwellModel {
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      type_users.relation,
       cmp.name,
       u.birthday,
       u.role_id,
@@ -125,6 +127,19 @@ export class RockwellModel {
     return user[0]
   }
 
+  static async getGamesByUser ({ userData }) {
+    const { user_id } = userData;
+    const games = await pg `
+    SELECT
+      m.match_id,
+      m.score,
+      m.date_end
+    FROM matches m
+    WHERE m.user_id = ${ user_id }::INT
+    ORDER BY m.date_end DESC;
+    `
+    return games
+  }
 
   static async create ({ input }) {
     const {

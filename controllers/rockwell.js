@@ -107,6 +107,19 @@ export class RockwellController {
     res.status(404).json({ message: 'User not found' })
   }
 
+  getGamesByUser = async (req, res) => {
+    const token = req.cookies.token;
+     if (!token) {
+      return res.status(401).json({ activeSession:false})
+    }
+
+    
+    const userData = jwt.verify(token, process.env.SECRET_JWT_KEY)
+    console.log('Decoded token data:', userData) // Remove this line in production
+    const games = await this.model.getGamesByUser({ userData })
+    return res.status(200).json(games)
+
+  }
 
     checkEmail = async (req, res) => {
       const { email } = req.query

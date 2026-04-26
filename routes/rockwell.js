@@ -30,6 +30,7 @@ export const createRockwellRouter = ({ model }) => {
 
   rockwellRouter.get('/users', rockwellController.getAll)
   rockwellRouter.get('/user', rockwellController.getById)
+  rockwellRouter.get('/user/games',rockwellController.getGamesByUser) // Endpoint para obtener los juegos de un usuario
   rockwellRouter.post('/register', rockwellController.create)
  
   rockwellRouter.get('/check-email',rockwellController.checkEmail) // Endpoint para verificar si el correo ya existe
