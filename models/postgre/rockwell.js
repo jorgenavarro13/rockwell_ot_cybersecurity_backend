@@ -69,7 +69,8 @@ export class RockwellModel {
     return users
   }
   
-  static async getById ({ id }) {
+  static async getById ({ userData }) {
+    const { user_id } = userData;
     const user = await pg `
     SELECT
       u.user_id,
@@ -86,7 +87,7 @@ export class RockwellModel {
     FROM users u
     LEFT JOIN companies cmp ON cmp.company_id = u.company_id
     LEFT JOIN matches m ON m.user_id = u.user_id
-    WHERE u.user_id = ${ id }
+    WHERE u.user_id = ${ user_id }
     GROUP BY
       u.user_id,
       u.name,
@@ -226,7 +227,7 @@ export class RockwellModel {
     static async createGame ({ userData }) {
       console.log(userData);
       const {
-        user_id,
+        user_id
       } = userData
 
       const game =  await pg `
@@ -258,7 +259,7 @@ export class RockwellModel {
 
       // Postgre is very special with time, so to avoid any issues with the time comparison, we use a range of 2 milliseconds around the provided time_start. This should be enough to account for any discrepancies in time storage and retrieval, while still ensuring we get the correct game record.
 
-      console.log('Game info retrieved:', gameInfo); // Debugging line
+      // // console.log('Game info retrieved:', gameInfo); // Debugging line
       return gameInfo[0];
     }
 
