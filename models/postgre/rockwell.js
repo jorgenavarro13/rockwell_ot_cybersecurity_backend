@@ -70,7 +70,8 @@ export class RockwellModel {
     return users
   }
   
-  static async getById ({ id }) {
+  static async getById ({ userData }) {
+    const { user_id } = userData;
     const user = await pg `
     SELECT
       u.user_id,
@@ -78,27 +79,48 @@ export class RockwellModel {
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      type_users.relation AS type_of_user,
       COALESCE(cmp.name, '') AS company,
       u.birthday,
       u.role_id,
       u.is_active AS state,
+      u.is_banned,
+      u.is_active,
+
+      json_build_object(
+        'name', countries.name,
+        'flag', countries.logo,
+        'code', countries.code
+      ) AS country,
+
+      (u.role_id = (SELECT get_admin_role())) AS is_admin,
+       
       COALESCE(COUNT(m.user_id), 0)::INT AS gamesplayed
     FROM users u
     LEFT JOIN companies cmp ON cmp.company_id = u.company_id
     LEFT JOIN matches m ON m.user_id = u.user_id
-    WHERE u.user_id = ${ id }
+    JOIN countries
+      ON countries.country_id = u.country
+    JOIN type_users
+      ON type_users.type_id = u.type_of_user
+    WHERE u.user_id = ${ user_id }::INT
     GROUP BY
       u.user_id,
       u.name,
       u.country,
       u.email,
       u.phone,
-      u.type_of_user,
+      type_users.relation,
       cmp.name,
       u.birthday,
       u.role_id,
-      u.is_active
+      u.is_active,
+      countries.name,
+      countries.logo,
+      countries.code,
+      u.is_banned,
+      u.is_active,
+      u.role_id;
     `
 
     if (user.length === 0) return null
@@ -106,6 +128,19 @@ export class RockwellModel {
     return user[0]
   }
 
+  static async getGamesByUser ({ userData }) {
+    const { user_id } = userData;
+    const games = await pg `
+    SELECT
+      m.match_id,
+      m.score,
+      m.date_end
+    FROM matches m
+    WHERE m.user_id = ${ user_id }::INT
+    ORDER BY m.date_end DESC;
+    `
+    return games
+  }
 
   static async create ({ input }) {
     const {
@@ -234,7 +269,7 @@ export class RockwellModel {
     static async createGame ({ userData }) {
       console.log(userData);
       const {
-        user_id,
+        user_id
       } = userData
 
       const game =  await pg `
@@ -266,7 +301,7 @@ export class RockwellModel {
 
       // Postgre is very special with time, so to avoid any issues with the time comparison, we use a range of 2 milliseconds around the provided time_start. This should be enough to account for any discrepancies in time storage and retrieval, while still ensuring we get the correct game record.
 
-      console.log('Game info retrieved:', gameInfo); // Debugging line
+      // // console.log('Game info retrieved:', gameInfo); // Debugging line
       return gameInfo[0];
     }
 

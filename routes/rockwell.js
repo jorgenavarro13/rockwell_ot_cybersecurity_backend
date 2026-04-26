@@ -28,8 +28,9 @@ export const createRockwellRouter = ({ model }) => {
   /// ROCKWELL ENDPOINTS
   rockwellRouter.get('/session', rockwellController.session) // Middleware para obtención de token
 
-  rockwellRouter.get('/user', rockwellController.getAll)
-  rockwellRouter.get('/user/:id', rockwellController.getById)
+  rockwellRouter.get('/users', rockwellController.getAll)
+  rockwellRouter.get('/user', rockwellController.getById)
+  rockwellRouter.get('/user/games',rockwellController.getGamesByUser) // Endpoint para obtener los juegos de un usuario
   rockwellRouter.post('/register', rockwellController.create)
  
   rockwellRouter.get('/check-email',rockwellController.checkEmail) // Endpoint para verificar si el correo ya existe
@@ -45,11 +46,6 @@ export const createRockwellRouter = ({ model }) => {
   // USER ENDPOINTS
 
   // adminRouter.get('/dashboard/stats', adminController.getDashboardStats) // Endpoint para obtener estadísticas del dashboard
-
-  // rockwellRouter.post('/logout', rockwellController.logout)
-
-  // rockwellRouter.delete('/:id', rockwellController.delete)
-  // rockwellRouter.patch('/:id', rockwellController.update)
 
   return { rockwellRouter, adminRouter, gameRouter }  
 }
