@@ -132,12 +132,14 @@ export class RockwellModel {
     const { user_id } = userData;
     const games = await pg `
     SELECT
+    ROW_NUMBER() OVER (ORDER BY m.score DESC) AS position,
       m.match_id,
       m.score,
-      m.date_end
+      m.date_end AS date
     FROM matches m
-    WHERE m.user_id = ${ user_id }::INT
-    ORDER BY m.date_end DESC;
+    WHERE m.user_id = ${ user_id }::INT and date_end IS NOT NULL
+    ORDER BY m.date_end ASC
+    ;
     `
     return games
   }
